@@ -12,5 +12,10 @@
         android:title="퀴즈 관리"
         android:icon="@android:drawable/ic_menu_zoom"/>
 
+    <item
+        android:id="@+id/quiz_add"
+        android:title="퀴즈 추가"
+        android:icon="@android:drawable/ic_menu_add"/>
+
 
 </menu>

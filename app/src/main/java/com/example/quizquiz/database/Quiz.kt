@@ -65,13 +65,10 @@ data class Quiz
 
 class StringListTypeConverter {
     @TypeConverter
-    // 메서드 생성
-    // 객체에서 테이블로 갈 때 = List -> String
     fun stringListToString(stringList: List<String>?): String? {
         return stringList?.joinToString(",")
     }
     @TypeConverter
-    // 테이블에서 객체로 갈 때 = String -> List
     fun stringToStringList(string: String?): List<String>? {
         return string?.split(",")?.toList()
     }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
@@ -24,6 +25,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         db = QuizDatabase.getInstance(this)
+        
+        Thread(Runnable {
+            for(quiz in db.quizDAO().getAll()) {
+                Log.d("mytag", quiz.toString())
+            }
+        }).start()
 
         // XML 파일 역직렬화 하기 위해서
 //        db.quizDAO().insert(
@@ -47,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             //frame 안에 fragment를 넣음
-            .add(R.id.frame, QuizListFragment())
+            .add(R.id.frame, QuizFragment())
             .commit()
 
         // 메뉴를 선택했을 때 실행이 된다
@@ -64,14 +71,21 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.frame, QuizListFragment())
+                        .commit()
+                }
+                R.id.quiz_add -> {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.frame, QuizCreateFragment())
+                        .commit()
                 }
             }
-                // (메뉴를) 수동으로 닫아 줌
-                drawerLayout.closeDrawers()
+            // (메뉴를) 수동으로 닫아 줌
+            drawerLayout.closeDrawers()
 
-                    // ture로 return
-                    // 모든 일이 정상적으로 끝났으면 true로 retrun
-                    true
+            // ture로 return
+            // 모든 일이 정상적으로 끝났으면 true로 retrun
+            true
         }
 
         drawerToggle = object : ActionBarDrawerToggle(
@@ -146,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                     "multiple_choice" -> {
-                        val choices = e.getElementsByTagName("choices")
+                        val choices = e.getElementsByTagName("choice")
                         val choiceList = mutableListOf<String>() // XML은 무조건 문자열로 가져와야함
                         // until -> 길이의 끝까지
                         for(idx in 0 until choices.length) {
@@ -160,9 +174,9 @@ class MainActivity : AppCompatActivity() {
                                 guesses = choiceList))
                     }
                 }
-                for(quiz in quizList) {
-                    db.quizDAO().insert(quiz)
-                }
+            }
+            for(quiz in quizList) {
+                db.quizDAO().insert(quiz)
             }
         }
     }
